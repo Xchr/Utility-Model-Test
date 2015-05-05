@@ -1,0 +1,333 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+		<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+		<script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+		
+		
+	</head>
+
+	<body>
+		&nbsp&nbsp&nbsp&nbsp Choose size of array: 
+		<select id="arraysize" onchange="showarray(this.value)">
+				<option selected>-----</option>
+				<option value="0" onclick='showarray(this.value)'>10,000</option>
+				<option value="1" onclick='showarray(this.value)'>20,000</option>
+				<option value="2" onclick='showarray(this.value)'>30,000</option>
+				<option value="3" onclick='showarray(this.value)'>40,000</option>
+				<option value="4" onclick='showarray(this.value)'>50,000</option>
+				<option value="5" onclick='showarray(this.value)'>60,000</option>
+				<option value="6" onclick='showarray(this.value)'>70,000</option>
+				<option value="7" onclick='showarray(this.value)'>80,000</option>
+				<option value="8" onclick='showarray(this.value)'>90,000</option>
+				<option value="9" onclick='showarray(this.value)'>100,000</option>
+			</select><br><br>
+			<select id="wsserver">
+				<option value="192.168.101.61">Sri</option>
+				<option value="193.1.13.14">Athlone</option>
+				<option value="193.1.201.26">Waterford</option>
+				<option value="141.20.103.211">Berlin</option>
+				<option value="203.159.63.249">Bangkok</option>
+				<option value="141.20.103.211">Sydney</option>
+			</select><br><br>
+		<textarea id="org" rows="8" cols="100" readonly></textarea><br><br><br>
+		<textarea id="rst" rows="8" cols="100" readonly></textarea><br><br><br>
+		<button id="bbsort" onclick="dobbsort()">Bubble Sort</button>&nbsp&nbsp&nbsp&nbsp
+		<button id="mgsort" onclick="domgsort()">Merge Sort</button><br><br><br>
+		<button id="mgsort" onclick="million()">Millionair</button><br><br><br>
+		<label value="123">
+		<button id="offbb" onclick="new websocket().offload(1),chose='bb'">OffloadBubble</button>
+		<button id="offmg" onclick="new websocket().offload(2),chose='mg';">OffloadMerge</button><br><br><br>
+		</label>
+		<div style="float:right"><p id="cosl"></p></div><br>
+		<div style="float:right"><p id="nettm"></p></div>
+	</body>
+	
+	<script>
+		//function to generating random integers
+		function random (size){
+			var y = [];
+			while(size >0) y.push(size--)
+			y.sort(function() {return .5 - Math.random()});
+			return y;
+		};
+		var msg10 = random(10000), msg20 = random(20000), msg30 = random(30000), msg40 = random(40000), msg50 = random(50000), msg60 = random(60000), msg70 = random(70000), msg80 = random(80000), msg90 = random(90000), msg100 = random(100000);
+		//store the arrays to be sorted
+		var msgs = [ msg10, msg20, msg30, msg40, msg50, msg60, msg70, msg80, msg90, msg100];
+		
+		//try merge sort one million
+		function million(){
+			//var list = random(1000000);
+			//document.getElementById("org").innerHTML = list;
+			//var a = [45,5,6,3,0,88,6,9,37];
+			//alert(mergesort(a));
+			var stm = Date.now();
+			console.log("Start sorting at" + (new Date()));
+			var sts = mergesort(random(1000000));
+			var fstm = Date.now();
+			sttm = fstm - stm;
+			console.log("Merge Sort Finish sorting at" + (new Date()));
+			console.log("merge Sorting takes: " + (fstm - stm) + "ms");
+			document.getElementById("rst").innerHTML = sts;
+		};
+		
+		//show the random array
+		function showarray(i){
+			document.getElementById("org").innerHTML = msgs[i];
+			//console.log("Finish display at" + (new Date()));
+		};
+		
+		//bubble sorting
+		var bubblesort = function (list) {
+		
+		var stm = Date.now();
+		console.log("Start sorting at" + (new Date()));
+		var rst = [];
+		var comparisons = 0,
+			swaps = 0,
+			endIndex = 0,
+			len = list.length - 1,
+			hasSwap = true;
+ 
+		for (var i = 0; i < len; i++) {
+ 
+			hasSwap = false;
+ 
+			for (var j = 0, swapping, endIndex = len - i; j < endIndex; j++) {
+				comparisons++;
+ 
+				if (list[j] > list[j + 1]) {
+         
+					swapping = list[j];
+				
+					list[j] = list[j + 1];
+					list[j + 1] = swapping;
+					hasSwap = true;
+					swaps++;
+                
+				};
+			rst = list;
+			};
+ 
+			if (!hasSwap) {
+				break;
+			}
+		}
+ 
+		var fstm = Date.now();
+		sttm = fstm - stm;
+		console.log("Bubble Sort Finish sorting at" + (new Date()));
+		console.log("Bubble Sorting takes: " + (fstm - stm) + "ms");
+		console.log("--Bubble Sort--")
+		console.log("Comparisons: " + comparisons);
+		console.log("Swaps: " + swaps);
+        
+		//rst.pop();
+		return rst;
+	};
+	// call bubble sort
+	function dobbsort(){
+		var num = document.getElementById("arraysize").value;
+		var list = msgs[num];
+		var stm = Date.now();
+		console.log("Bubble Start sorting at" + (new Date()));
+		var rst = bubblesort(list);
+		var fstm = Date.now();
+		sttm = fstm - stm;
+		console.log("Bubble Sort Finish sorting at" + (new Date()));
+		console.log("Bubble Sorting takes: " + (fstm - stm) + "ms");
+		document.getElementById("rst").innerHTML = rst;
+		document.getElementById("cosl").innerHTML = "The Bubble sorting takes: " + sttm + "ms" ;
+	};
+	
+	//merge sorting
+	/** // merge sort by iteration
+	function mergesort (items){
+		//sort
+		function sort(items){
+			if (items.length == 1) {
+				return items;
+			}
+
+			var work = [];
+			for (var i=0, len=items.length; i < len; i++){
+				work.push([items[i]]);
+			}
+			work.push([]);  //in case of odd number of items
+
+			for (var lim=len; lim > 1; lim = Math.floor((lim+1)/2)){
+				for (var j=0,k=0; k < lim; j++, k+=2){
+					work[j] = merge(work[k], work[k+1]);
+				}
+				work[j] = [];  //in case of odd number of items
+			}
+			return work[0];
+		};
+		function merge(left, right){
+			var result = [];
+
+			while (left.length > 0 && right.length > 0){
+			if (left[0] < right[0]){
+				result.push(left.shift());
+			} else {
+				result.push(right.shift());
+				}
+			}
+			return result.concat(left).concat(right);
+		};
+		var start = Date.now();
+		console.log("Merge Start sorting at" + (new Date()));
+		var sts = sort(list);
+		var finish = Date.now();
+		console.log("Merge Sort Finish sorting at" + (new Date()));
+		console.log("Merge Sorting takes: " + (finish - start) + "ms");
+		return sts;
+	};*/
+	
+	
+	 //merge sort by recursion
+	var mergesort = function (list) {
+		
+		function merge (left, right) {
+			 var result  = [],
+				il      = 0,
+				ir      = 0;
+
+			while (il < left.length && ir < right.length){
+				if (left[il] < right[ir]){
+					result.push(left[il++]);
+				} else {
+					result.push(right[ir++]);
+				}
+			}
+
+			return result.concat(left.slice(il)).concat(right.slice(ir));
+		}; 
+		
+		
+		function sort(items){
+
+			if (items.length < 2) {
+				return items;
+			}
+
+			var middle = Math.floor(items.length / 2),
+			left    = items.slice(0, middle),
+			right   = items.slice(middle);
+
+			return merge(sort(left), sort(right));
+		}
+		
+		
+		var start = Date.now();
+		console.log("Merge Start sorting at" + (new Date()));
+		var sts = sort(list);
+		var finish = Date.now();
+		console.log("Merge Sort Finish sorting at" + (new Date()));
+		console.log("Merge Sorting takes: " + (finish - start) + "ms");
+		return sts;
+	}; 
+	
+	// call merge sort
+	function domgsort(){
+		var num = document.getElementById("arraysize").value;
+		var list = msgs[num];
+		var stm = Date.now();
+		console.log("Merge Start sorting at" + (new Date()));
+		var sts = mergesort(list);
+		var fstm = Date.now();
+		sttm = fstm - stm;
+		console.log("Merge Sort Finish sorting at" + (new Date()));
+		console.log("Merge Sorting takes: " + (fstm - stm) + "ms");
+		document.getElementById("rst").innerHTML = sts;
+		document.getElementById("cosl").innerHTML = "The Merge sorting takes: " + sttm + "ms" ;
+	};
+		
+	//websocket
+	var hassend = false;
+	function websocket(){
+		//initial offload, check support and to get the chosen server by user
+        var wsip = document.getElementById("wsserver").value;
+		window.WebSocket = window.WebSocket || window.MozWebSocket;
+		if(!window.WebSocket){
+			alert( "Sorry, the browser doesn\'t support websocket!!!");
+		}else{	
+			var ws = new WebSocket('ws://' + wsip + ':6385');	
+		};
+		
+		//offload request
+		var ofdstm;	
+		this.offload = function (i){
+			ws.onopen = function (e) {
+				console.log("Client connecting at " + (new Date()));
+				var arg = msgs[document.getElementById("arraysize").value];
+				console.log(arg); //test
+				//var chose;
+				if(i === 1){
+					var func = bubblesort.toString();
+					var offmsg = {
+					flg: false,
+					arg: arg,
+					func: func,
+					};
+					if(hassend === false){
+						ws.send(JSON.stringify(offmsg));
+						ofdstm = Date.now();
+						hassend=true;
+						console.log(hassend);
+					}
+					else if(hassend===true){
+						console.log("here!");
+						var msgagain = {flg:true,
+							arg:arg,
+						};
+						ws.send(JSON.stringify(msgagain));
+						ofdstm = Date.now();
+					}
+				}else if (i === 2){
+					var func = mergesort.toString();
+					var offmsg = {
+					flg: false,
+					arg: arg,
+					func: func,
+					};
+					if(hassend === false){
+						ws.send(JSON.stringify(offmsg));
+						ofdstm = Date.now();
+						hassend=true;
+						console.log(hassend);
+					}
+					else if(hassend===true){
+						console.log("here!");
+						var msgagain = {flg:true,
+							arg:arg,
+						};
+						ws.send(JSON.stringify(msgagain));
+						ofdstm = Date.now();
+					};
+					
+				};
+				console.log("offloading to Server at " + (new Date()));
+				e.preventDefault();
+			};
+		
+	};
+	
+		//response
+			ws.onmessage = function(ev){
+				var ofdetm = Date.now();
+				console.log("Response from server: "+ ev.data + (new Date()));
+				var rst = JSON.parse(ev.data);
+				
+				var ofdtm = ofdetm - ofdstm;
+				document.getElementById("nettm").innerHTML = "The offloading takes: " + ofdtm + "ms";
+				document.getElementById("rst").innerHTML = "The arrry is Sorted : " + rst.rtst;
+			};
+	
+	};
+	</script>
+
+
+</html>
