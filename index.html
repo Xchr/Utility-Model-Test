@@ -23,6 +23,19 @@
 				<option value="7" onclick='showarray(this.value)'>80,000</option>
 				<option value="8" onclick='showarray(this.value)'>90,000</option>
 				<option value="9" onclick='showarray(this.value)'>100,000</option>
+			</select><br>
+			<select id="offloadsize" onchange="showarray(this.value)">
+				<option selected>-----</option>
+				<option value="10" onclick='showarray(this.value)'>1,200</option>
+				<option value="11" onclick='showarray(this.value)'>2,400</option>
+				<option value="12" onclick='showarray(this.value)'>3,600</option>
+				<option value="13" onclick='showarray(this.value)'>4,800</option>
+				<option value="14" onclick='showarray(this.value)'>6,000</option>
+				<option value="15" onclick='showarray(this.value)'>7,200</option>
+				<option value="16" onclick='showarray(this.value)'>8,400</option>
+				<option value="17" onclick='showarray(this.value)'>9,600</option>
+				<option value="18" onclick='showarray(this.value)'>10,800</option>
+				<option value="19" onclick='showarray(this.value)'>12,000</option>
 			</select><br><br>
 			<select id="wsserver">
 				<option value="192.168.101.61">Sri</option>
@@ -37,15 +50,16 @@
 		<button id="bbsort" onclick="dobbsort()">Bubble Sort</button>&nbsp&nbsp&nbsp&nbsp
 		<button id="mgsort" onclick="domgsort()">Merge Sort</button><br><br><br>
 		<button id="mgsort" onclick="million()">Millionair</button><br><br><br>
-		<label value="123">
+		<button id="ttoffsz" onclick="new websocket().ttoffloadsz()">TestOffloadSize</button>
 		<button id="offbb" onclick="new websocket().offload(1),chose='bb'">OffloadBubble</button>
 		<button id="offmg" onclick="new websocket().offload(2),chose='mg';">OffloadMerge</button><br><br><br>
-		</label>
 		<div style="float:right"><p id="cosl"></p></div><br>
 		<div style="float:right"><p id="nettm"></p></div>
 	</body>
 	
 	<script>
+		//define a global variable of target list need to sort
+		var stlist;
 		//function to generating random integers
 		function random (size){
 			var y = [];
@@ -55,7 +69,10 @@
 		};
 		var msg10 = random(10000), msg20 = random(20000), msg30 = random(30000), msg40 = random(40000), msg50 = random(50000), msg60 = random(60000), msg70 = random(70000), msg80 = random(80000), msg90 = random(90000), msg100 = random(100000);
 		//store the arrays to be sorted
-		var msgs = [ msg10, msg20, msg30, msg40, msg50, msg60, msg70, msg80, msg90, msg100];
+		var msgs = [ msg10, msg20, msg30, msg40, msg50, msg60, msg70, msg80, msg90, msg100, msg1d2, msg2d4, msg3d6, msg4d8, msg6d0, msg7d2, msg8d4, msg9d6, msg10d8, msg12d0];
+		
+		//generate array for testing different offloading size
+		var msg1d2 = random(1200), msg2d4 = random(2400), msg3d6 = random(3600), msg4d8 = random(4800), msg6d0 = random(6000), msg7d2 = random(7200), msg8d4 = random(8400), msg9d6 = random(9600), msg10d8 = random(10800), msg12d0 = random(12000);
 		
 		//try merge sort one million
 		function million(){
@@ -76,6 +93,7 @@
 		//show the random array
 		function showarray(i){
 			document.getElementById("org").innerHTML = msgs[i];
+			stlist = msgs[i];
 			//console.log("Finish display at" + (new Date()));
 		};
 		
@@ -129,11 +147,11 @@
 	};
 	// call bubble sort
 	function dobbsort(){
-		var num = document.getElementById("arraysize").value;
-		var list = msgs[num];
+		//var num = document.getElementById("arraysize").value;
+		//var list = msgs[num];
 		var stm = Date.now();
 		console.log("Bubble Start sorting at" + (new Date()));
-		var rst = bubblesort(list);
+		var rst = bubblesort(stlist);
 		var fstm = Date.now();
 		sttm = fstm - stm;
 		console.log("Bubble Sort Finish sorting at" + (new Date()));
@@ -232,11 +250,11 @@
 	
 	// call merge sort
 	function domgsort(){
-		var num = document.getElementById("arraysize").value;
-		var list = msgs[num];
+		//var num = document.getElementById("arraysize").value;
+		//var list = msgs[num];
 		var stm = Date.now();
 		console.log("Merge Start sorting at" + (new Date()));
-		var sts = mergesort(list);
+		var sts = mergesort(stlist);
 		var fstm = Date.now();
 		sttm = fstm - stm;
 		console.log("Merge Sort Finish sorting at" + (new Date()));
@@ -256,6 +274,41 @@
 		}else{	
 			var ws = new WebSocket('ws://' + wsip + ':6385');	
 		};
+		
+		
+		//test offloading with different size of message from 1,200 to 12,000
+		this.ttoffloadsz = function () {
+			ws.onopen = function (e) {
+				console.log("Client connecting at " + (new Date()));
+				var hassend = false;
+				var arg = msgs[document.getElementById("offloadsize").value];
+				console.log(document.getElementById("offloadsize").value);
+				console.log(arg); //test
+				var func = bubblesort.toString();
+					var offmsg = {
+						flg: false,
+						argt: arg,
+						func: func,
+					};
+				if(hassend === false){
+					ws.send(JSON.stringify(offmsg));
+					ofdstm = Date.now();
+					hassend=true;
+					console.log(hassend);
+				}else if(hassend===true ){
+					console.log("here!");
+					var msgagain = {
+						flg: true,
+						argt: arg,
+					};
+					ws.send(JSON.stringify(msgagain));
+					ofdstm = Date.now();
+				};
+					e.preventDefault();
+					console.log("offloading to Server at " + (new Date()));
+			};
+		};
+		
 		
 		//offload request
 		var ofdstm;	
