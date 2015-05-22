@@ -36,8 +36,6 @@
 				<option value="17" onclick='showarray(this.value)'>9,600</option>
 				<option value="18" onclick='showarray(this.value)'>10,800</option>
 				<option value="19" onclick='showarray(this.value)'>12,000</option>
-				<option value="5" onclick='showarray(this.value)'>50,000</option>
-				<option value="9" onclick='showarray(this.value)'>100,000</option>
 			</select><br><br>
 			<select id="wsserver">
 				<option value="192.168.101.61">Sri</option>
@@ -53,8 +51,6 @@
 		<button id="mgsort" onclick="domgsort()">Merge Sort</button><br><br><br>
 		<button id="mgsort" onclick="million()">Millionair</button><br><br><br>
 		<button id="ttoffsz" onclick="new websocket().ttoffloadsz()">TestOffloadSize</button>
-		<button id="ttoffsend" onclick="new websocket().ttsend()">TestOffload(Send)</button>
-		<button id="ttoffreceive" onclick="new websocket().ttreceive()">TestOffload(Receive)</button>
 		<button id="offbb" onclick="new websocket().offload(1),chose='bb'">OffloadBubble</button>
 		<button id="offmg" onclick="new websocket().offload(2),chose='mg';">OffloadMerge</button><br><br><br>
 		<div style="float:right"><p id="cosl"></p></div><br>
@@ -314,34 +310,8 @@
 		};
 		
 		
-		//test only sending offloading different size without return
-		this.ttsend = function (){
-			ws.onopen = function (e){
-				console.log("Client connecting at " + (new Date()));
-				var arg = msgs[document.getElementById("offloadsize").value];
-				ofdstm = Date.now();
-				console.log(arg.length)
-				if(arg.length > 12000){
-					var i = 0;
-					while(arg.length > 12000){
-						ws.send(JSON.stringify(arg.splice(0,10000)));
-						console.log(i);
-					};
-					ws.send(JSON.stringify(arg));
-				}else{
-				
-				ws.send(JSON.stringify(arg));
-				};
-				console.log("Execution of offloading statement takes: " +  (Date.now() - ofdstm) + "ms");
-			};
-		};
-		
-		
-		var ofdstm;	 //timestamp of start
-		
-		
 		//offload request
-		
+		var ofdstm;	
 		this.offload = function (i){
 			ws.onopen = function (e) {
 				console.log("Client connecting at " + (new Date()));
