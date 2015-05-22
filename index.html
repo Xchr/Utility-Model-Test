@@ -405,8 +405,12 @@
 				var rst = JSON.parse(ev.data);
 				
 				var ofdtm = ofdetm - ofdstm;
-				document.getElementById("nettm").innerHTML = "The offloading takes: " + ofdtm + "ms";
-				document.getElementById("rst").innerHTML = "The arrry is Sorted : " + rst.rtst;
+				if(rst.rtst){
+					document.getElementById("nettm").innerHTML = "The offloading takes: " + ofdtm + "ms";
+					document.getElementById("rst").innerHTML = "The arrry is Sorted : " + rst.rtst;
+				}else{
+					document.getElementById("nettm").innerHTML = "The ONLY Offloading(Send) takes: " + (rst - ofdstm) + "ms";
+				};
 			};
 	
 	};
