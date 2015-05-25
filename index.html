@@ -42,10 +42,11 @@
 			<select id="wsserver">
 				<option value="192.168.101.61">Sri</option>
 				<option value="193.1.13.14">Athlone</option>
-				<option value="193.1.201.26">Waterford</option>
-				<option value="141.20.103.211">Berlin</option>
+				<option value="193.63.75.21">London</option>
+				<option value="138.4.0.119">Madrid</option>
+				<option value="129.242.19.196">Tromso(Norway)</option>
 				<option value="203.159.63.249">Bangkok</option>
-				<option value="141.20.103.211">Sydney</option>
+				<option value="212.199.61.203">Tel Aviv Yaffo(Israel)</option>
 			</select><br><br>
 		<textarea id="org" rows="8" cols="100" readonly></textarea><br><br><br>
 		<textarea id="rst" rows="8" cols="100" readonly></textarea><br><br><br>
@@ -337,6 +338,22 @@
 		};
 		
 		
+		// test only receiving results from servers
+		this.ttreceive = function (){
+			ws.onopen = function (e){
+				var sdsz = document.getElementById("offloadsize").value;
+				ofdstm = Date.now();
+				var ms = {
+					flg:'onlyreceive',
+					value: sdsz,
+				};
+				t0 = performance.now();
+				ws.send(JSON.stringify(ms));
+				t1 = performance.now();
+			};
+		};
+		
+		
 		var ofdstm;	 //timestamp of start
 		
 		
@@ -408,8 +425,10 @@
 				if(rst.rtst){
 					document.getElementById("nettm").innerHTML = "The offloading takes: " + ofdtm + "ms";
 					document.getElementById("rst").innerHTML = "The arrry is Sorted : " + rst.rtst;
+				}else if(rst.onlyrec){
+					document.getElementById("nettm").innerHTML = "The ONLY Offloading(Receive) takes: " + ofdtm + "ms"; //keep time-stamp the same as one device
 				}else{
-					document.getElementById("nettm").innerHTML = "The ONLY Offloading(Send) takes: " + (rst - ofdstm) + "ms";
+					document.getElementById("nettm").innerHTML = "The ONLY Offloading(Send) takes: " + ofdtm + "ms";
 				};
 			};
 	

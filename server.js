@@ -34,6 +34,7 @@ wsserver.on('request',function(request) {
 		//console.log(message.length);
 		var obj = JSON.parse(message.utf8Data);
 		//console.log(obj.arg);
+		if(obj.func){
 		if (obj.flg === false){
 			func = eval ( '(' + obj.func + ')');
 			var rtst = func(obj.arg);
@@ -44,6 +45,27 @@ wsserver.on('request',function(request) {
 			var rtst = func(obj.arg);
 			var rtmsg = {rtst: rtst};
 			connection.send(JSON.stringify(rtmsg));
+		};
+		}else if(obj.flg === "onlyreceive"){
+			//function to generating random integers
+			function random (size){
+				var y = [];
+				while(size >0) y.push(size--)
+				y.sort(function() {return .5 - Math.random()});
+				return y;
+			};
+			var msg10 = random(10000), msg20 = random(20000), msg30 = random(30000), msg40 = random(40000), msg50 = random(50000), msg60 = random(60000), msg70 = random(70000), msg80 = random(80000), msg90 = random(90000), msg100 = random(100000);
+		
+			//generate array for testing different offloading size
+			var msg1d2 = random(1200), msg2d4 = random(2400), msg3d6 = random(3600), msg4d8 = random(4800), msg6d0 = random(6000), msg7d2 = random(7200), msg8d4 = random(8400), msg9d6 = random(9600), msg10d8 = random(10800), msg12d0 = random(12000);
+		
+			//store the arrays to be sent
+			var msgs = [ msg10, msg20, msg30, msg40, msg50, msg60, msg70, msg80, msg90, msg100, msg1d2, msg2d4, msg3d6, msg4d8, msg6d0, msg7d2, msg8d4, msg9d6, msg10d8, msg12d0];
+			var onlyrec = msgs[obj.value];
+			connection.send(JSON.stringify(onlyrec));
+		}else{
+			connection.send(JSON.stringify(receivetime));
+			console.log("Server receives at : " + receivetime );
 		};
 		console.log("Server finishes all at " + (new Date()));
 	});
