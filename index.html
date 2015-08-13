@@ -48,6 +48,7 @@
 			<select id="wsserver">
 				<option value="192.168.101.61">Sri</option>
 				<option value="193.1.13.14">Athlone(Ireland)</option>
+				<option value="193.1.201.26">Waterford(Ireland)</option>
 				<option value="193.63.75.21">London(UK)</option>
 				<option value="138.4.0.120">Madrid(Spain)</option>
 				<option value="193.226.19.30">Tîrgu-Mureş(Romania)</option>
@@ -62,8 +63,8 @@
 		<button id="ttoffsz" onclick="new websocket().ttoffloadsz()">TestOffloadSize</button>
 		<button id="ttoffsend" onclick="new websocket().ttsend()">TestOffload(Send)</button>
 		<button id="ttoffreceive" onclick="new websocket().ttreceive()">TestOffload(Receive)</button>
-		<button id="offbb" onclick="new websocket().offload(1),chose='bb'">OffloadBubble</button>
-		<button id="offmg" onclick="new websocket().offload(2),chose='mg';">OffloadMerge</button><br><br><br>
+		<button id="offbb" onclick="new websocket().offload(1)">OffloadBubble</button>
+		<button id="offmg" onclick="new websocket().offload(2)">OffloadMerge</button><br><br><br>
 		<div style="float:right"><p id="cosl"></p></div><br>
 		<div style="float:right"><p id="nettm"></p></div>
 	</body>
@@ -371,7 +372,7 @@
 		this.offload = function (i){
 			ws.onopen = function (e) {
 				console.log("Client connecting at " + (new Date()));
-				var arg = msgs[document.getElementById("arraysize").value];
+				var arg = document.getElementById("arraysize").value; //sending only the array position not the whole array!!!
 				console.log(arg); //test
 				//var chose;
 				if(i === 1){
